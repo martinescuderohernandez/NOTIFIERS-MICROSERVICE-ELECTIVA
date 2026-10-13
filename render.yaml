@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: notifier-microservice
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeployTrigger: commit
+    healthCheckPath: /health
+    envVars:
+      # Kafka (Aiven)
+      - key: KAFKA_ENABLED
+        value: "true"
+      - key: KAFKA_BOOTSTRAP_SERVERS
+        sync: false
+      - key: KAFKA_SECURITY_PROTOCOL
+        value: SSL
+      - key: KAFKA_SSL_CAFILE
+        sync: false
+      - key: KAFKA_SSL_CERTFILE
+        sync: false
+      - key: KAFKA_SSL_KEYFILE
+        sync: false
+      # Brevo SMTP
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: "2525"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: "Sistema de Notificaciones"
+      # Application
+      - key: NODE_ENV
+        value: production
