@@ -39,6 +39,13 @@ const config = {
     fromEmail: process.env.SMTP_FROM_EMAIL || 'noreply@example.com',
     fromName: process.env.SMTP_FROM_NAME || 'Sistema de Notificaciones',
   },
+
+  // Brevo HTTP API (HTTPS:443). Preferred over SMTP because Render free tier
+  // blocks outbound SMTP ports (25, 465, 587).
+  brevo: {
+    apiKey: process.env.BREVO_API_KEY || '',
+    apiUrl: process.env.BREVO_API_URL || 'https://api.brevo.com/v3/smtp/email',
+  },
 };
 
 module.exports = config;

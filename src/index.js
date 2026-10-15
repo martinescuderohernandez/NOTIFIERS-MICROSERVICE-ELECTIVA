@@ -4,7 +4,7 @@
 // ============================================================================
 const express = require('express');
 const config = require('./config');
-const { initEmailService, sendEmail } = require('./emailService');
+const { initEmailService, sendEmail, getEmailMode } = require('./emailService');
 const { startConsumer, stopConsumer, getConsumerStatus } = require('./kafkaConsumer');
 const templates = require('./templates');
 
@@ -27,6 +27,7 @@ app.get('/health', (req, res) => {
       port: config.smtp.port,
       from: config.smtp.fromEmail,
       configured: !!(config.smtp.user && config.smtp.pass),
+      mode: getEmailMode(),
     },
     uptime: Math.floor(process.uptime()),
   });
