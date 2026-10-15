@@ -1,6 +1,4 @@
-// ============================================================================
-// Kafka Consumer — Connects to Aiven Kafka and consumes notification events
-// ============================================================================
+
 const { Kafka } = require('kafkajs');
 const fs = require('fs');
 const config = require('./config');
@@ -9,9 +7,7 @@ const handlers = require('./handlers');
 let consumer = null;
 let isConnected = false;
 
-/**
- * Creates the KafkaJS client with SSL configuration for Aiven.
- */
+
 function createKafkaClient() {
   const kafkaConfig = {
     clientId: config.kafka.clientId,
@@ -23,7 +19,7 @@ function createKafkaClient() {
     },
   };
 
-  // SSL configuration for Aiven (mutual TLS with client certificates)
+
   if (config.kafka.ssl.enabled) {
     const sslConfig = {
       rejectUnauthorized: true,
@@ -45,9 +41,7 @@ function createKafkaClient() {
   return new Kafka(kafkaConfig);
 }
 
-/**
- * Routes a Kafka message to the appropriate handler based on topic.
- */
+
 async function routeMessage(topic, message) {
   try {
     const value = JSON.parse(message.value.toString());
@@ -75,13 +69,11 @@ async function routeMessage(topic, message) {
     } else {
       console.error(`[KafkaConsumer] Error processing message on '${topic}':`, error.message);
     }
-    // Don't re-throw — we log and continue so the consumer doesn't get stuck
+
   }
 }
 
-/**
- * Starts the Kafka consumer and subscribes to all notification topics.
- */
+
 async function startConsumer() {
   if (!config.kafka.enabled) {
     console.log('[KafkaConsumer] Kafka is DISABLED. Consumer not started.');
@@ -96,14 +88,14 @@ async function startConsumer() {
     isConnected = true;
     console.log(`[KafkaConsumer] Connected to Kafka at ${config.kafka.brokers.join(', ')}`);
 
-    // Subscribe to all 4 topics
+
     const topics = Object.values(config.kafka.topics);
     for (const topic of topics) {
       await consumer.subscribe({ topic, fromBeginning: false });
       console.log(`[KafkaConsumer] Subscribed to topic: ${topic}`);
     }
 
-    // Start consuming — eachMessage commits offset after successful processing
+
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         const offset = message.offset;
@@ -121,9 +113,7 @@ async function startConsumer() {
   }
 }
 
-/**
- * Gracefully stops the Kafka consumer.
- */
+
 async function stopConsumer() {
   if (consumer) {
     try {
@@ -136,9 +126,7 @@ async function stopConsumer() {
   }
 }
 
-/**
- * Returns whether the consumer is connected.
- */
+
 function getConsumerStatus() {
   return isConnected;
 }

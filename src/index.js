@@ -1,7 +1,4 @@
-// ============================================================================
-// Notifier Microservice — Entry Point
-// Express server + Kafka consumer startup
-// ============================================================================
+
 const express = require('express');
 const config = require('./config');
 const { initEmailService, sendEmail, getEmailMode } = require('./emailService');
@@ -11,7 +8,7 @@ const templates = require('./templates');
 const app = express();
 app.use(express.json());
 
-// ── Health Check ──
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -33,7 +30,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ── Root ──
+
 app.get('/', (req, res) => {
   res.json({
     service: 'Notifier Microservice',
@@ -44,7 +41,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// ── Test Endpoint — Send a test email without Kafka ──
+
 app.post('/notifications/test', async (req, res) => {
   const { to, type } = req.body;
 
@@ -59,7 +56,7 @@ app.post('/notifications/test', async (req, res) => {
     return res.status(400).json({ error: `Invalid type. Must be one of: ${validTypes.join(', ')}` });
   }
 
-  // Generate sample data for test
+
   const sampleData = {
     id: 'test-user-001',
     name: 'Test User',
@@ -97,23 +94,19 @@ app.post('/notifications/test', async (req, res) => {
   }
 });
 
-// ── Start Server ──
+
 async function start() {
-  // 1. Initialize SMTP transporter
   initEmailService();
 
-  // 2. Start Express server
   app.listen(config.port, '0.0.0.0', () => {
     console.log(`[Notifier] Server running on http://0.0.0.0:${config.port}`);
     console.log(`[Notifier] Environment: ${config.nodeEnv}`);
     console.log(`[Notifier] Health check: http://localhost:${config.port}/health`);
   });
 
-  // 3. Start Kafka consumer (in background)
   startConsumer();
 }
 
-// ── Graceful Shutdown ──
 async function shutdown(signal) {
   console.log(`\n[Notifier] Received ${signal}. Shutting down gracefully...`);
   await stopConsumer();
@@ -123,7 +116,6 @@ async function shutdown(signal) {
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 
-// Start!
 start().catch(error => {
   console.error('[Notifier] Fatal error:', error);
   process.exit(1);

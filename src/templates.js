@@ -1,10 +1,4 @@
-// ============================================================================
-// Email Templates — HTML templates for each notification type
-// ============================================================================
 
-/**
- * Welcome email when a user is created.
- */
 function userCreatedTemplate(data) {
   const name = data.name || 'Usuario';
   return {
@@ -32,9 +26,7 @@ function userCreatedTemplate(data) {
   };
 }
 
-/**
- * Notification when a user's data is updated.
- */
+
 function userUpdatedTemplate(data) {
   const name = data.name || 'Usuario';
   return {
@@ -63,9 +55,7 @@ function userUpdatedTemplate(data) {
   };
 }
 
-/**
- * Notification when a user is deleted.
- */
+
 function userDeletedTemplate(data) {
   return {
     subject: 'Tu cuenta ha sido eliminada',
@@ -90,9 +80,7 @@ function userDeletedTemplate(data) {
   };
 }
 
-/**
- * Notification when a bank account is created.
- */
+
 function accountCreatedTemplate(data) {
   return {
     subject: `Tu cuenta bancaria ${data.account_type || ''} ha sido creada`,

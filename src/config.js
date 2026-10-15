@@ -1,7 +1,4 @@
-// ============================================================================
-// Notifier Microservice — Configuration
-// Loads environment variables for Kafka (Aiven), Brevo SMTP, and Express.
-// ============================================================================
+
 require('dotenv').config();
 
 const config = {
@@ -9,7 +6,7 @@ const config = {
   port: parseInt(process.env.PORT || '8001', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
 
-  // Kafka (Aiven)
+
   kafka: {
     enabled: process.env.KAFKA_ENABLED !== 'false',
     brokers: (process.env.KAFKA_BOOTSTRAP_SERVERS || 'localhost:9092').split(','),
@@ -29,7 +26,7 @@ const config = {
     },
   },
 
-  // Brevo SMTP
+
   smtp: {
     host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
     port: parseInt(process.env.SMTP_PORT || '2525', 10),
@@ -40,8 +37,7 @@ const config = {
     fromName: process.env.SMTP_FROM_NAME || 'Sistema de Notificaciones',
   },
 
-  // Brevo HTTP API (HTTPS:443). Preferred over SMTP because Render free tier
-  // blocks outbound SMTP ports (25, 465, 587).
+
   brevo: {
     apiKey: process.env.BREVO_API_KEY || '',
     apiUrl: process.env.BREVO_API_URL || 'https://api.brevo.com/v3/smtp/email',

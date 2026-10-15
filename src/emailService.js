@@ -1,19 +1,11 @@
-// ============================================================================
-// Email Service — Sends emails via Brevo.
-//   1) Brevo HTTP API (HTTPS:443) if BREVO_API_KEY is set  ← recommended on Render
-//   2) Brevo SMTP via Nodemailer otherwise
-// Render free instances block outbound SMTP ports (25/465/587), which causes
-// "Connection timeout" errors — the HTTP API avoids that.
-// ============================================================================
+
 const nodemailer = require('nodemailer');
 const config = require('./config');
 
 let transporter = null;
-let mode = 'simulated'; // 'api' | 'smtp' | 'simulated'
+let mode = 'simulated';
 
-/**
- * Initializes the email provider (Brevo API or SMTP).
- */
+
 function initEmailService() {
   if (config.brevo.apiKey) {
     mode = 'api';
@@ -41,9 +33,7 @@ function initEmailService() {
   console.log(`[EmailService] SMTP transporter configured: ${config.smtp.host}:${config.smtp.port}`);
 }
 
-/**
- * Sends one email through the Brevo transactional HTTP API.
- */
+
 async function sendViaApi(to, subject, htmlBody) {
   const response = await fetch(config.brevo.apiUrl, {
     method: 'POST',
@@ -68,9 +58,7 @@ async function sendViaApi(to, subject, htmlBody) {
   return { messageId: body.messageId };
 }
 
-/**
- * Sends an email. Retries up to 3 times with exponential backoff.
- */
+
 async function sendEmail(to, subject, htmlBody) {
   if (mode === 'simulated') {
     console.log(`[EmailService][SIMULATED] To: ${to} | Subject: ${subject}`);
@@ -99,7 +87,7 @@ async function sendEmail(to, subject, htmlBody) {
         console.error(`[EmailService] All ${MAX_RETRIES} attempts failed. Skipping email to ${to}.`);
         throw error;
       }
-      // Exponential backoff: 1s, 2s, 4s
+
       await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
     }
   }
